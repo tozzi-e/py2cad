@@ -24,13 +24,20 @@ for i in [-49/2,49/2]:
 
         ex1=ex1-Pos(i,j,10)*Cylinder(10.3/2,20)
 
-# Remove first cylindrical volume to creat cavity that connects with the DPT 
+# Remove first cylindrical volume to create cavity that connects with the DPT 
 ex1=ex1-Pos(0,0,1.4/2)*Cylinder(55.05/2,1.4)
 
-# Remove second cylinderical volume to create cavity that houses the o-ring 
+# Remove second cylindrical volume to create cavity that houses the o-ring 
 ex1=ex1-Pos(0,0,(1.4+4)/2)*Cylinder(49.6/2,1.4+4)
 
-#create fillet to make o-ring more washable
+# Next step is to create fillet to make o-ring more washable
+
+# the method to select edges is based on sorting various edges and filtering them via some logic
+# it may not work when the prior build steps are changed and the order of hte elements in some lists may change.
+# a good strategy is to apply fillets as early as possible when there are very few edges
+# so it will be easier to filter the correct edges
+# i.e. if you need to add extra holes etc, do it after the fillet operation
+
 edgecir0=ex1.edges().filter_by(GeomType.CIRCLE).group_by(SortBy.RADIUS)[2]
 edgecir=edgecir0.sort_by(Axis.Z)[0]
 ex1= fillet(edgecir,2.5)
